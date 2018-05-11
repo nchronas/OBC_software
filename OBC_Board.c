@@ -241,7 +241,7 @@ const uint_least8_t SPI_count = Board_SPICOUNT;
 #include <ti/drivers/uart/UARTMSP432.h>
 
 UARTMSP432_Object uartMSP432Objects[Board_UARTCOUNT];
-unsigned char uartMSP432RingBuffer[Board_UARTCOUNT][32];
+unsigned char uartMSP432RingBuffer[Board_UARTCOUNT][255];
 
 /*
  * The baudrate dividers were determined by using the MSP432 baudrate
