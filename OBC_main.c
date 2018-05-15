@@ -78,6 +78,8 @@ void *mainThread(void *arg0)
     device_init();
     queueInit();
 
+    start_flag = true;
+
     /* Loop forever echoing */
     while (1) {
 
@@ -99,6 +101,10 @@ void *mainThread(void *arg0)
  */
 void *ecssThread(void *arg0)
 {
+
+    while(!start_flag) {
+        usleep(1000);
+    }
 
     /* Loop forever */
     while (1) {
