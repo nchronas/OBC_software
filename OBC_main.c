@@ -46,12 +46,15 @@
 
 #include "satellite.h"
 #include "devices.h"
+#include "queue.h"
 
 #include "INA226.h"
 #include "TMP100.h"
 
 extern UART_Handle uart_dbg_bus;
 extern UART_Handle uart_pq9_bus;
+
+bool start_flag = false;
 
 /*
  *  ======== mainThread ========
@@ -73,6 +76,7 @@ void *mainThread(void *arg0)
     /*ECSS services start*/
     pkt_pool_INIT();
     device_init();
+    queueInit();
 
     /* Loop forever echoing */
     while (1) {
