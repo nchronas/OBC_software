@@ -39,6 +39,7 @@
 /* Driver Header files */
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/UART.h>
+#include <ti/drivers/Timer.h>
 
 /* Example/Board Header files */
 #include "OBC_Board.h"
@@ -62,6 +63,7 @@ void *mainThread(void *arg0)
     GPIO_init();
     UART_init();
     I2C_init();
+    Timer_init();
 
     /* Turn on user LED */
     GPIO_write(PQ9_EN, 1);
@@ -132,6 +134,27 @@ void *senThread(void *arg0)
         sleep(1);
 
 
+    }
+
+    return (NULL);
+}
+/*  ======== pqmasterThread ========
+ *  This thread generates the for outputing sensor readings
+ */
+void *pqmasterThread(void *arg0)
+{
+
+    while(!start_flag) {
+        usleep(1000);
+    }
+
+    PQ9_master_init();
+
+    sleep(1);
+
+    /* Loop forever */
+    while (1) {
+      PQ9_master();
     }
 
     return (NULL);

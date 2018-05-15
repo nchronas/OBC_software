@@ -36,8 +36,8 @@
 //
 //*****************************************************************************
 
-// This file was automatically generated on 02/05/2018 at 17:26:43
-// by TI PinMux version 4.0.1511
+// This file was automatically generated on 11/05/2018 at 22:29:56
+// by TI PinMux version 4.0.1519
 //
 //*****************************************************************************
 
@@ -233,6 +233,32 @@ const SPI_Config SPI_config[Board_SPICOUNT] = {
 };
 
 const uint_least8_t SPI_count = Board_SPICOUNT;
+/*
+ *  =============================== Timer ===============================
+ */
+#include <ti/drivers/Timer.h>
+#include <ti/drivers/timer/TimerMSP432.h>
+
+TimerMSP432_Object timerMSP432Objects[Board_TIMERCOUNT];
+
+const TimerMSP432_HWAttrs timerMSP432HWAttrs[Board_TIMERCOUNT] = {
+    {
+        .timerBaseAddress = TIMER32_0_BASE,
+        .clockSource = TIMER_A_CLOCKSOURCE_SMCLK,
+        .intNum = INT_T32_INT1,
+        .intPriority = ~0
+    },
+};
+
+const Timer_Config Timer_config[Board_TIMERCOUNT] = {
+    {
+        .fxnTablePtr = &TimerMSP432_Timer32_fxnTable,
+        .object = &timerMSP432Objects[PQ9_TX_TIM],
+        .hwAttrs = &timerMSP432HWAttrs[PQ9_TX_TIM]
+    },
+};
+
+const uint_least8_t Timer_count = Board_TIMERCOUNT;
 
 /*
  *  =============================== UART ===============================

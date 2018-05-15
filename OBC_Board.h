@@ -36,8 +36,8 @@
 //
 //*****************************************************************************
 
-// This file was automatically generated on 02/05/2018 at 17:26:43
-// by TI PinMux version 4.0.1511 
+// This file was automatically generated on 11/05/2018 at 22:29:56
+// by TI PinMux version 4.0.1519 
 //
 //*****************************************************************************
 #ifndef __BOARD_H__
@@ -95,6 +95,15 @@ typedef enum Board_SPIName {
     FRAM = 0,
    Board_SPICOUNT
 } Board_SPIName;
+    
+/*!
+ *  @def    MSP_EXP432P401R_TimerName
+ *  @brief  Enum of Timer names on the MSP_EXP432P401R dev board
+ */
+typedef enum Board_TimerName {
+    PQ9_TX_TIM = 0,
+   Board_TIMERCOUNT
+} Board_TimerName;
 
 /*!
  *  @def    MSP_EXP432P401R_UARTName
