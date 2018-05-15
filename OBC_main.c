@@ -39,6 +39,9 @@
 /* Driver Header files */
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/UART.h>
+#include <ti/drivers/I2C.h>
+#include <ti/drivers/SPI.h>
+#include <ti/drivers/Watchdog.h>
 #include <ti/drivers/Timer.h>
 
 /* Example/Board Header files */
@@ -66,6 +69,7 @@ void *mainThread(void *arg0)
     GPIO_init();
     UART_init();
     I2C_init();
+    SPI_init();
     Timer_init();
 
     /* Turn on user LED */
