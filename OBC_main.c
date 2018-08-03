@@ -111,6 +111,8 @@ void *mainThread(void *arg0)
     /* Loop forever echoing */
     while (1) {
 
+        set_parameter(SBSYS_reset_clr_int_wdg_param_id, NULL);
+
         update_device(OBC_MON_DEV_ID);
         usleep(1);
 
