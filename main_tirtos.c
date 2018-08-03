@@ -46,15 +46,13 @@
 #include "OBC_Board.h"
 
 extern void *mainThread(void *arg0);
+extern void *pqReceiveThread(void *arg0);
+extern void *pqTransmitThread(void *arg0);
+extern void *dbgThread(void *arg0);
+extern void *senThread(void *arg0);
 
 /* Stack size in bytes */
 #define THREADSTACKSIZE    4096
-
-extern void *mainThread(void *arg0);
-extern void *ecssThread(void *arg0);
-extern void *senThread(void *arg0);
-extern void *pqmasterThread(void *arg0);
-
 
 /*
  *  ======== main ========
@@ -83,7 +81,7 @@ int main(void)
 
     pthread_attr_setschedparam(&attrs, &priParam);
 
-    retc |= pthread_attr_setstacksize(&attrs, THREADSTACKSIZE);
+    retc |= pthread_attr_setstacksize(&attrs, 4096);
     if (retc != 0) {
         /* pthread_attr_setstacksize() failed */
         while (1);
@@ -95,8 +93,7 @@ int main(void)
         while (1);
     }
 
-
-    pthread_t           thread_ecss;
+    pthread_t           thread_pqReceive;
     pthread_attr_t      attrs2;
     struct sched_param  priParam2;
 
@@ -120,13 +117,13 @@ int main(void)
     }
 
     /* Create ecss thread */
-    retc = pthread_create(&thread_ecss, &attrs2, ecssThread, (void* )0);
+    retc = pthread_create(&thread_pqReceive, &attrs2, pqReceiveThread, (void* )0);
     if (retc != 0) {
         /* pthread_create() failed */
         while (1);
      }
 
-     pthread_t           thread_sen;
+     pthread_t           thread_pqTransmit;
      pthread_attr_t      attrs3;
      struct sched_param  priParam3;
 
@@ -150,41 +147,11 @@ int main(void)
      }
 
      /* Create ecss thread */
-     retc = pthread_create(&thread_sen, &attrs3, senThread, (void* )0);
+     retc = pthread_create(&thread_pqTransmit, &attrs3, pqTransmitThread, (void* )0);
      if (retc != 0) {
          /* pthread_create() failed */
          while (1);
-      }
-
-     pthread_t           thread_master;
-     pthread_attr_t      attrs4;
-     struct sched_param  priParam4;
-
-     /* Set priority and stack size attributes */
-     pthread_attr_init(&attrs4);
-     priParam.sched_priority = 4;
-
-     detachState = PTHREAD_CREATE_DETACHED;
-     retc = pthread_attr_setdetachstate(&attrs4, detachState);
-     if (retc != 0) {
-         /* pthread_attr_setdetachstate() failed */
-         while (1);
-     }
-
-     pthread_attr_setschedparam(&attrs4, &priParam4);
-
-     retc |= pthread_attr_setstacksize(&attrs4, 1024);
-     if (retc != 0) {
-         /* pthread_attr_setstacksize() failed */
-         while (1);
-     }
-
-     /* Create ecss thread */
-     retc = pthread_create(&thread_master, &attrs4, pqmasterThread, (void* )0);
-     if (retc != 0) {
-         /* pthread_create() failed */
-         while (1);
-      }
+    }
 
     BIOS_start();
 

@@ -43,6 +43,8 @@
 #include <ti/drivers/SPI.h>
 #include <ti/drivers/Watchdog.h>
 #include <ti/drivers/Timer.h>
+#include <ti/drivers/ADC.h>
+//#include <ti/devices/msp432p4xx/driverlib/cs.h>
 
 /* Example/Board Header files */
 #include "OBC_Board.h"
@@ -53,6 +55,10 @@
 
 #include "INA226.h"
 #include "TMP100.h"
+
+#include "parameters.h"
+
+#include "osal.h"
 
 extern UART_Handle uart_dbg_bus;
 extern UART_Handle uart_pq9_bus;
@@ -71,9 +77,13 @@ void *mainThread(void *arg0)
     I2C_init();
     SPI_init();
     Timer_init();
+    ADC_init();
+    Watchdog_init();
+
+    //in Hz
+    uint32_t freq = CS_getSMCLK();
 
     /* Turn on user LED */
-    GPIO_write(PQ9_EN, 1);
     GPIO_write(PQ9_EN, 0);
 
 
@@ -81,6 +91,20 @@ void *mainThread(void *arg0)
     pkt_pool_INIT();
     device_init();
     queueInit();
+    init_parameters();
+    OSAL_init();
+
+    uint16_t boot_counter=0, size;
+    uint8_t buf[4];
+
+   // get_parameter(OBC_boot_counter_param_id, &boot_counter, buf, &size);
+   // boot_counter=0;
+   // set_parameter(OBC_boot_counter_param_id, boot_counter);
+
+    get_parameter(OBC_boot_counter_param_id, &boot_counter, buf, &size);
+    boot_counter++;
+    set_parameter(OBC_boot_counter_param_id, boot_counter);
+
 
     start_flag = true;
 
@@ -103,7 +127,7 @@ void *mainThread(void *arg0)
  *  This thread runs on a higher priority, since wdg pin
  *  has to be ready for master.
  */
-void *ecssThread(void *arg0)
+void *pqReceiveThread(void *arg0)
 {
 
     while(!start_flag) {
@@ -113,12 +137,28 @@ void *ecssThread(void *arg0)
     /* Loop forever */
     while (1) {
          import_pkt();
+         usleep(1);
+    }
+
+    return (NULL);
+}
+
+void *pqTransmitThread(void *arg0)
+{
+
+    while(!start_flag) {
+        usleep(1000);
+    }
+
+    /* Loop forever */
+    while (1) {
          export_pkt();
          usleep(1);
     }
 
     return (NULL);
 }
+
 
 char msg[100];
 
