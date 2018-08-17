@@ -90,7 +90,6 @@ void *mainThread(void *arg0)
     /*ECSS services start*/
     pkt_pool_INIT();
     device_init();
-    queueInit();
     init_parameters();
     OSAL_init();
 
@@ -108,6 +107,8 @@ void *mainThread(void *arg0)
 
     start_flag = true;
 
+    uint32_t sen_loop = 100000;
+
     /* Loop forever echoing */
     while (1) {
 
@@ -119,7 +120,8 @@ void *mainThread(void *arg0)
         update_device(OBC_TEMP_DEV_ID);
         usleep(1);
 
-        usleep(100);
+        get_parameter(SBSYS_sensor_loop_param_id, &sen_loop, buf, &size);
+        usleep(sen_loop);
 
     }
 }
@@ -181,15 +183,15 @@ void *senThread(void *arg0)
     /* Loop forever */
     while (1) {
 
-        read_device_parameters(OBC_MON_DEV_ID, &ina_dev);
-        read_device_parameters(OBC_TEMP_DEV_ID, &tmp_dev);
+        //read_device_parameters(OBC_MON_DEV_ID, &ina_dev);
+        //read_device_parameters(OBC_TEMP_DEV_ID, &tmp_dev);
 
-        sprintf(msg, "INA: C %d, V %d, W %d, Temp: %d\n", (int)(ina_dev.current*1000), (int)ina_dev.voltage, (int)ina_dev.power, (int)tmp_dev.temp);
-        UART_write(uart_dbg_bus, msg, strlen(msg));
+       // sprintf(msg, "INA: C %d, V %d, W %d, Temp: %d\n", (int)(ina_dev.current*1000), (int)ina_dev.voltage, (int)ina_dev.power, (int)tmp_dev.temp);
+       // UART_write(uart_dbg_bus, msg, strlen(msg));
 
         sleep(1);
 
-
+        //master_();
     }
 
     return (NULL);
@@ -197,20 +199,21 @@ void *senThread(void *arg0)
 /*  ======== pqmasterThread ========
  *  This thread generates the for outputing sensor readings
  */
-void *pqmasterThread(void *arg0)
+void *pqMasterThread(void *arg0)
 {
 
     while(!start_flag) {
         usleep(1000);
     }
 
-    PQ9_master_init();
+    //PQ9_master_init();
 
     sleep(1);
 
     /* Loop forever */
     while (1) {
-      PQ9_master();
+      //PQ9_master();
+      sleep(1);
     }
 
     return (NULL);
