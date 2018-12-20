@@ -155,8 +155,8 @@ void *pqReceiveThread(void *arg0)
 
     /* Loop forever */
     while (1) {
-         import_pkt();
-         usleep(1);
+         //import_pkt();
+         sleep(100);
     }
 
     return (NULL);
@@ -171,7 +171,7 @@ void *pqTransmitThread(void *arg0)
 
     /* Loop forever */
     while (1) {
-         export_pkt();
+         PQ9_primary();
          usleep(1);
     }
 
@@ -227,7 +227,7 @@ void *pqMasterThread(void *arg0)
 
     /* Loop forever */
     while (1) {
-      //PQ9_master();
+      PQ9_master();
       sleep(1);
     }
 
